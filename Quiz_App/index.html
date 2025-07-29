@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Quiz App</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+ <div class="container">
+    <h2>Quiz Application</h2>
+     <button id="Start" onclick="startQuiz()" style="background-color: rgb(66, 66, 246);">Start Quiz</button>
+     <div id="question"></div>
+    <button id="Submit" onclick="checkAns()" style="display:none;">Submit Answer</button>
+    <p id="result"></p>
+     <p id="yourScores"></p>
+ </div>
+<script>
+const myQuestions = [
+  {
+    question: "Who invented JavaScript?",
+    answers: {
+      a: "Douglas Crockford",
+      b: "Sheryl Sandberg",
+      c: "Brendan Eich"
+    },
+    correctAnswer: "c"
+  },
+  {
+    question: "Which one of these is a JavaScript package manager?",
+    answers: {
+      a: "Node.js",
+      b: "TypeScript",
+      c: "npm"
+    },
+    correctAnswer: "c"
+  },
+  {
+    question: "Which tool can you use to ensure code quality?",
+    answers: {
+      a: "Angular",
+      b: "jQuery",
+      c: "RequireJS"
+    },
+    correctAnswer: "c"
+  }
+];
+
+let score = 0;
+let currentQuestion = 0;
+const quesDiv = document.getElementById("question");
+const resultDiv = document.getElementById("result");
+const scoresDiv = document.getElementById("yourScores");
+const submitBtn = document.getElementById("Submit");
+const startBtn = document.getElementById("Start");
+
+function startQuiz() {
+  startBtn.style.display = 'none';
+  submitBtn.style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = myQuestions[currentQuestion];
+  let answersHTML = '';
+  
+  for (const option in q.answers) {
+    answersHTML += `
+      <label>
+        <input type="radio" name="answer" value="${option}">
+        ${q.answers[option]}
+      </label><br>
+    `;
+  }
+  
+  quesDiv.innerHTML = `
+    <p><strong>Question ${currentQuestion + 1}:</strong> ${q.question}</p>
+    ${answersHTML}
+  `;
+  resultDiv.textContent = '';
+}
+
+function checkAns() {
+  const selectedOption = document.querySelector('input[name="answer"]:checked');
+  
+  if (!selectedOption) {
+    resultDiv.textContent = "Please select an answer!";
+    return;
+  }
+  
+  const answer = selectedOption.value;
+  if (answer === myQuestions[currentQuestion].correctAnswer) {
+    score++;
+  } 
+  
+  currentQuestion++;
+  if (currentQuestion < myQuestions.length) {
+          loadQuestion();
+  } else {
+           showResults();
+  }
+}
+
+function showResults() {
+  scoresDiv.innerHTML = `
+    <h3>Quiz Completed!</h3>
+    <p>Your score: ${score} out of ${myQuestions.length}</p>
+  `;
+  submitBtn.style.display = 'none';
+  quesDiv.style.display = 'none';
+}
+</script>
+</body>
+</html>
